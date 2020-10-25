@@ -32,3 +32,6 @@ octave-workspace
 
 # anatan folder
 anatan/
+
+# .vscode folder
+.vscode/
