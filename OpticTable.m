@@ -30,6 +30,22 @@ classdef OpticTable < handle
             self.table_update();        % Call table_update method to update the optic table after adding this lens
         end
 
+        function remove_part(self, part)
+            % remove PART from the optic table
+            if self.gaussian_beam == part
+                part.table = OpticTable.empty;
+                part.update([]);
+                self.gaussian_beam = Beam.empty;
+            elseif ismember(part, self.lenses)
+                part.table = OpticTable.empty;
+                self.lenses(self.lenses == part) = [];
+                self.table_update()
+            else
+                disp('No such component on the optic table!')
+            end
+        end
+
+
         function table_update(self)
             % update the optic table origin and table_end, calculate the new beam parameters, and generate the new beam profile
             lens_list = self.lens_list_gen();
@@ -40,15 +56,20 @@ classdef OpticTable < handle
                 % update the table origin and table_end
                 init_z0 = self.gaussian_beam.beam_segments(1, 2);
                 end_z0 = self.gaussian_beam.beam_segments(end, 2);
-                if init_z0 <= lens_list(1, 1)
-                    self.origin = init_z0 - 2 * self.gaussian_beam.beam_segments(1, 4);
+                if ~isempty(self.lenses)        
+                    if init_z0 <= lens_list(1, 1)
+                        self.origin = init_z0 - 4 * self.gaussian_beam.beam_segments(1, 4);
+                    else
+                        self.origin = lens_list(1, 1) - 2 * abs(lens_list(1, 2)); 
+                    end
+                    if end_z0 >= lens_list(end, 1)
+                        self.table_end = end_z0 + 4 * self.gaussian_beam.beam_segments(end, 4);
+                    else 
+                        self.table_end = lens_list(end, 1) + 2 * abs(lens_list(end, 2));
+                    end
                 else
-                    self.origin = lens_list(1, 1) - 2 * abs(lens_list(1, 2)); 
-                end
-                if end_z0 >= lens_list(end, 1)
-                    self.table_end = end_z0 + 2 * self.gaussian_beam.beam_segments(end, 4);
-                else 
-                    self.table_end = lens_list(end, 1) + 2 * abs(lens_list(end, 2));
+                    self.origin = init_z0 - 4 * self.gaussian_beam.beam_segments(1, 4);
+                    self.table_end = end_z0 + 4 * self.gaussian_beam.beam_segments(end, 4);
                 end
 
                 % generate the new beam profile
@@ -60,12 +81,31 @@ classdef OpticTable < handle
             if isempty(self.gaussian_beam)
                 disp('No beam on the table!')
             else 
+                % set the axes limits based on the input arguments
+                if nargin == 3
+                    limits = [range_z range_radius];
+                elseif nargin == 2
+                    limits = [range_z [-inf inf]];
+                else
+                    limits = [-inf inf -inf inf];
+                end  
+
+                % For better illustration, extend the range of beam.profile if the plot range is larger than its current profile range 
+                if nargin > 1
+                    z_lb = limits(1);
+                    z_ub = limits(2);
+                    self.origin = min(z_lb, self.origin);
+                    self.table_end = max(z_ub, self.table_end);
+                    
+                    self.gaussian_beam.profile_gen();
+                end
+
                 fig = figure;
                 ax = axes(fig);
 
                 % plot the beam profile by drawing two symmetric curves with the dependent as +waist_radius and -waist_radius
-                h = plot(ax, self.gaussian_beam.profile.z, self.gaussian_beam.profile.radius, self.gaussian_beam.profile.z, -1 .* self.gaussian_beam.profile.radius);
-                set(h, 'Color', self.gaussian_beam.color{1}, 'LineWidth', 1);
+                %h = plot(ax, self.gaussian_beam.profile.z, self.gaussian_beam.profile.radius, self.gaussian_beam.profile.z, -1 .* self.gaussian_beam.profile.radius);
+                %set(h, 'Color', self.gaussian_beam.color{1}, 'LineWidth', 1);
 
                 % fill the area between two curves
                 beam_area = [-1 * self.gaussian_beam.profile.radius, fliplr(self.gaussian_beam.profile.radius)];
@@ -76,15 +116,9 @@ classdef OpticTable < handle
                 % plot the vertical lines representing the thin lenses
                 z_lens = kron(self.gaussian_beam.beam_segments(2:end, 5)', [1, 1]');
                 plot(z_lens, repmat(ylim',1,size(z_lens,2)), 'k:', 'LineWidth', 1.5)
+
+                axis(limits)
                 
-                % set the axes limits based on the input arguments
-                if nargin == 3
-                    limits = [range_z range_radius];
-                    axis(limits)
-                elseif nargin == 2
-                    limits = [range_z [-inf inf]];
-                    axis(limits)
-                end  
             end
         end
 

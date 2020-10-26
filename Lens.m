@@ -19,6 +19,13 @@ classdef Lens < handle
             self.table = optic_table;
         end
 
+        function remove(self)
+            % remove the lens from the optic table
+            if ~isempty(self.table)
+                self.table.remove_part(self)
+            end
+        end
+
         function move_to(self, new_pos)
             % move the lens to a new position, then update the optic table
             self.pos = new_pos;
