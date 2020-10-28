@@ -22,20 +22,21 @@ ft = fittype( 'sqrt(a + b*x + c*x^2)', 'independent', 'x', 'dependent', 'y' );
 opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
 opts.Display = 'Off';
 opts.MaxIter = 800;
-opts.StartPoint = [0.349983765984809 0.196595250431208 0.251083857976031];
-opts.TolFun = 1e-08;
-opts.TolX = 1e-08;
+opts.StartPoint = [0.1966 0.2511 0.6160];
+opts.TolFun = 1e-09;
+opts.TolX = 1e-09;
 
 % Fit model to data.
 [fitresult, gof] = fit( xData, yData, ft, opts );
 
 % Plot fit with data.
 figure( 'Name', 'untitled fit 1' );
-h = plot( fitresult, xData, yData );
-legend( h, 'dx vs. pos', 'untitled fit 1', 'Location', 'NorthEast', 'Interpreter', 'none' );
+h = plot( fitresult, '--', xData, yData );
+legend( h, 'Measurement', 'Fitting', 'Location', 'SouthEast', 'Interpreter', 'tex' );
 % Label axes
-xlabel( 'pos', 'Interpreter', 'none' );
-ylabel( 'dx', 'Interpreter', 'none' );
+xlabel( 'Position', 'Interpreter', 'none' );
+ylabel( 'D_{4\sigma}', 'Interpreter', 'tex' );
+set(h, 'LineWidth', 1, 'MarkerSize', 15);
 grid on
 hold on
 

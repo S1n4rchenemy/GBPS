@@ -138,7 +138,6 @@ classdef Beam < handle
                 for i = 2 : size(self.beam_segments, 1)
                     if z > self.beam_segments(i, 5)
                         index = i;
-                        break
                     end
                 end
             end
