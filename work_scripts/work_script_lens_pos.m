@@ -1,6 +1,7 @@
 lens1 = Lens(2, -2);
 lens2 = Lens(0.4, 0);
-beam = Beam(343e-9, 114.143e-6 * 2, -5, 1.15);
+beam = Beam(343e-9, 294.787e-6 * 2, -4.7, 2.7);
+% beam = Beam(515e-9, 377.038e-6 * 2, -5, 1.15);
 table = OpticTable;
 
 table.add_beam(beam);
@@ -33,7 +34,8 @@ yyaxis left
 plot(z, waist_pos, 'LineWidth', 1.5)
 xlabel('Lens position (m)')
 ylabel('Waist position (cm)')
-title('UV pump with 2-m lens at various positions')
+title([num2str(beam.lambda*1e9), 'nm pump with ', num2str(lens1.f), 'm lens at various positions: ', ...
+    'waist pos. @ ', num2str(beam.beam_segments(1, 2)), 'm'])
 
 yyaxis right 
 plot(z, waist, 'LineWidth', 1.5)
@@ -42,6 +44,10 @@ plot(z, size_at_specimen, 'LineWidth', 1.5)
 plot(z, size_at_final_mirror, 'LineWidth', 1.5)
 ylabel('Beam size (um)')
 legend('waist position', 'at waist', 'at specimen', 'at final mirror')
+grid on
+
+path = 'C:\Users\Jialiang Chen\!School\PhD\Research\Data Processing\Laser\20201029';
+saveas(gcf, fullfile(path, [num2str(beam.lambda*1e9), 'nm_beam_', num2str(lens1.f), 'm_lens']), 'png')
 
 
 
