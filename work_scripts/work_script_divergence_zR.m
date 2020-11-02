@@ -6,11 +6,12 @@ table = OpticTable;
 table.add_beam(beam);
 table.add_lens(lens1);
 
-z = linspace(0.8, 3.8, 3000)';
-divg = zeros(3000, 1);
-zR = zeros(3000, 1);
+sampling = 3000;    % set sampling numbers
+z = linspace(0.8, 3.8, sampling)';
+divg = zeros(sampling, 1);
+zR = zeros(sampling, 1);
 
-for i = 1 : 3000
+for i = 1 : sampling
     lens1.move_to(z(i))
     divg(i) = beam.beam_segments(2, 3);
     zR(i) = beam.beam_segments(2, 4);

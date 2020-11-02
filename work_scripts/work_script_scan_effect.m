@@ -8,13 +8,14 @@ table.add_beam(beam);
 table.add_lens(lens1);
 table.add_lens(lens2);
 
-z = linspace(-0.3, 0.3, 600)';
-waist_pos = zeros(1, 600)';
-waist = zeros(1, 600)';
-size_at_specimen = zeros(1, 600)';
-size_at_final_mirror = zeros(1, 600)';
+sampling = 600;    % set sampling numbers
+z = linspace(-0.3, 0.3, sampling)';
+waist_pos = zeros(1, sampling)';
+waist = zeros(1, sampling)';
+size_at_specimen = zeros(1, sampling)';
+size_at_final_mirror = zeros(1, sampling)';
 
-for i = 1 : 600
+for i = 1 : sampling
     lens2.move_to(z(i));
     waist_pos(i) = beam.beam_segments(3, 2);
     waist(i) = beam.beam_segments(3, 1);

@@ -124,6 +124,12 @@ classdef Beam < handle
                 self.table.table_update();
             end
         end
+        
+        function set_divergence(self, divg)
+            % convinient funciton to set a beam by inputing its divergence
+            waist = 4 * self.M2 * self.lambda / pi / divg;
+            self.change_to(self.lambda, self.M2, self.beam_segments(1, 2), waist);
+        end 
 
         function remove(self)
             if ~isempty(self.table)

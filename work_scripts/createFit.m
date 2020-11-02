@@ -22,7 +22,7 @@ ft = fittype( 'sqrt(a + b*x + c*x^2)', 'independent', 'x', 'dependent', 'y' );
 opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
 opts.Display = 'Off';
 opts.MaxIter = 800;
-opts.StartPoint = [0.1966 0.2511 0.6160];
+opts.StartPoint = [0.6797, 0.6551, 0.1626]; %[0.1966 0.2511 0.6160]; % [0.6797, 0.6551, 0.1626]
 opts.TolFun = 1e-09;
 opts.TolX = 1e-09;
 
