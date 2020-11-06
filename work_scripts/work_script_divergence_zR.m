@@ -1,13 +1,23 @@
+clear
+
 lens1 = Lens(2, 0);
-beam = Beam(515e-9, 377.038e-6 * 2, 0, 1.15);
-% beam = Beam(343e-9, 294.787e-6 * 2, 0.3, 2.7);
+
+% beam = Beam(515e-9, 377.038e-6 * 2, 0, 1.29);
+% beam.set_divergence(1.67e-3);
+
+% beam = Beam(343e-9, 294.787e-6 * 2, 0, 3.7);
+% beam.set_divergence(2e-3)
+
+beam = Beam(1030e-9, 377.038e-6 * 2, 0, 1.15);
+beam.set_divergence(3.1e-3)
+
 table = OpticTable;
 
 table.add_beam(beam);
 table.add_lens(lens1);
 
-sampling = 3000;    % set sampling numbers
-z = linspace(0.8, 3.8, sampling)';
+sampling = 400;    % set sampling numbers
+z = linspace(0.3, 0.7, sampling)';
 divg = zeros(sampling, 1);
 zR = zeros(sampling, 1);
 
@@ -32,7 +42,8 @@ yyaxis right
 plot(z, zR, '--', 'LineWidth', 1.5)
 ylabel('Rayleigh Length (mm)')
 legend('Divergence', 'Rayleigh Length')
+axis tight
 
-path = 'C:\Users\Jialiang Chen\!School\PhD\Research\Data Processing\Laser\20201029';
-saveas(gcf, fullfile(path, ['divg_zR_lens_pos_', num2str(beam.lambda*1e9)]), 'png')
+path = 'C:\Users\Jialiang Chen\!School\PhD\Research\Data Processing\Laser\20201104\IR_lens_design';
+% saveas(gcf, fullfile(path, [num2str(beam.lambda*1e9),'_','divg_zR_lens_pos_', num2str(lens1.f*1000), 'mm_lens']), 'png')
 

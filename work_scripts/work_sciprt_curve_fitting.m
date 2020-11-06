@@ -1,6 +1,6 @@
 
-datasheet_path = 'C:\Users\Jialiang Chen\!School\PhD\Research\Data Processing\Laser\20201101\';
-datasheet_filename = 'IR_with_75mm_lens.xlsx';
+datasheet_path = 'C:\Users\Jialiang Chen\!School\PhD\Research\Data Processing\Laser\20201104\';
+datasheet_filename = 'IR_with_150mm_lens.xlsx';
 
 % Uncomment the line below to enable GUI file selection
 %[datasheet_filename, datasheet_path] = uigetfile('*.*', 'Select the datasheet file');
@@ -11,7 +11,7 @@ datasheet = readtable([datasheet_path, datasheet_filename], opts);
 
 lambda = 1030e-3;        % beam wavelength in [um] 
 
-d_fac = 10;     % the scaling factor for d_sigma
+d_fac = 1;     % the scaling factor for d_sigma
 pos_fac = 1000;     % default value is 1000 since the unit of pos is [mm], while the unit of d_sigma is [um]
 
 pos_index = 2;        % column 1 in the datasheet is the default column of the distance
@@ -36,4 +36,4 @@ text(0.02, 0.88, results_str, 'Units', 'normalized')
 title([datasheet_filename(1:end-5), ': Dx'], 'Interpreter', 'none')
 
 % comment the line below to disable auto saving
-% saveas(gcf, fullfile(datasheet_path(1:end-1), 'UV_75mm_Dy'), 'png')
+% saveas(gcf, fullfile(datasheet_path(1:end-1), 'UV_150mm_Dx'), 'png')
