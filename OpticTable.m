@@ -4,6 +4,7 @@ classdef OpticTable < handle
         table_end = 0;      % end of this one-dimensional optic table
         gaussian_beam = Beam.empty      % the gaussian beam on the table
         lenses = Lens.empty     % object array of the lenses on the table
+        beam_profile_auto_update = true;
     end
 
     methods
@@ -49,31 +50,34 @@ classdef OpticTable < handle
         function table_update(self)
             % update the optic table origin and table_end, calculate the new beam parameters, and generate the new beam profile
             lens_list = self.lens_list_gen();
+            
             if ~isempty(self.gaussian_beam)
                 % call the update method of the gaussian beam to update the beam parameters
                 self.gaussian_beam.update(lens_list);       
-
-                % update the table origin and table_end
-                init_z0 = self.gaussian_beam.beam_segments(1, 2);
-                end_z0 = self.gaussian_beam.beam_segments(end, 2);
-                if ~isempty(self.lenses)        
-                    if init_z0 <= lens_list(1, 1)
-                        self.origin = init_z0 - 4 * self.gaussian_beam.beam_segments(1, 4);
+                
+                if self.beam_profile_auto_update
+                    % update the table origin and table_end
+                    init_z0 = self.gaussian_beam.beam_segments(1, 2);
+                    end_z0 = self.gaussian_beam.beam_segments(end, 2);
+                    if ~isempty(self.lenses)        
+                        if init_z0 <= lens_list(1, 1)
+                            self.origin = init_z0 - 4 * self.gaussian_beam.beam_segments(1, 4);
+                        else
+                            self.origin = lens_list(1, 1) - 2 * abs(lens_list(1, 2)); 
+                        end
+                        if end_z0 >= lens_list(end, 1)
+                            self.table_end = end_z0 + 4 * self.gaussian_beam.beam_segments(end, 4);
+                        else 
+                            self.table_end = lens_list(end, 1) + 2 * abs(lens_list(end, 2));
+                        end
                     else
-                        self.origin = lens_list(1, 1) - 2 * abs(lens_list(1, 2)); 
-                    end
-                    if end_z0 >= lens_list(end, 1)
+                        self.origin = init_z0 - 4 * self.gaussian_beam.beam_segments(1, 4);
                         self.table_end = end_z0 + 4 * self.gaussian_beam.beam_segments(end, 4);
-                    else 
-                        self.table_end = lens_list(end, 1) + 2 * abs(lens_list(end, 2));
                     end
-                else
-                    self.origin = init_z0 - 4 * self.gaussian_beam.beam_segments(1, 4);
-                    self.table_end = end_z0 + 4 * self.gaussian_beam.beam_segments(end, 4);
-                end
 
-                % generate the new beam profile
-                self.gaussian_beam.profile_gen();
+                    % generate the new beam profile
+                    self.gaussian_beam.profile_gen();
+                end
             end
         end
 

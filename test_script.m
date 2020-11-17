@@ -49,19 +49,34 @@ beam.change_to(515e-9, 1.1, 0, 4e-3);
 
 % uncomment the below block to test the OpticTable.remove_part method
 % ===================================================================
-table.remove_part(lens)
-check_removed_from_table_lens_list = ~ismember(lens, table.lenses)
-check_lens_has_no_table = isempty(lens.table)
-table.plot_gen([-0.1 0.5])
-
-table.remove_part(lens2)
-check_removed_from_table_lens_list = ~ismember(lens, table.lenses)
-check_lens_has_no_table = isempty(lens.table)
-table.plot_gen()
-
-table.remove_part(beam)
-beam_segments_after_removed = beam.beam_segments
-check_beam_has_no_table = isempty(beam.table)
-table.plot_gen()
+% table.remove_part(lens)
+% check_removed_from_table_lens_list = ~ismember(lens, table.lenses)
+% check_lens_has_no_table = isempty(lens.table)
+% table.plot_gen([-0.1 0.5])
+% 
+% table.remove_part(lens2)
+% check_removed_from_table_lens_list = ~ismember(lens, table.lenses)
+% check_lens_has_no_table = isempty(lens.table)
+% table.plot_gen()
+% 
+% table.remove_part(beam)
+% beam_segments_after_removed = beam.beam_segments
+% check_beam_has_no_table = isempty(beam.table)
+% table.plot_gen()
 % ===================================================================
 
+
+% uncomment the below block to test the OpticTable.table_update without
+% updating the beam profile. (This function will increase the efficiency
+% when only beam parameters are needed)
+
+table.plot_gen([-0.1 0.5])
+
+table.beam_profile_auto_update = false;
+
+table.remove_part(lens)
+table.plot_gen([-0.1 0.5])
+
+table.beam_profile_auto_update = true;
+table.table_update();
+table.plot_gen([-0.1 0.5])
